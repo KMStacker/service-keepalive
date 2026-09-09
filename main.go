@@ -1,17 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
 func main() {
 	fmt.Println("Starting service-keepalive worker...")
+	loadEnv(".env")
 
 	// RENDER SITE KEEPALIVE
 	renderURL := os.Getenv("RENDER_SITE_URL")
@@ -46,7 +49,7 @@ func main() {
 
 func pingEndpoint(url string) error {
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 99 * time.Second,
 	}
 
 	fmt.Printf("Sending HTTP GET request to: %s\n", url)
@@ -147,4 +150,29 @@ func powerOnAivenService(client *http.Client, apiToken, url string) error {
 
 	fmt.Println("Aiven service power-on request sent successfully.")
 	return nil
+}
+
+func loadEnv(filepath string) {
+	file, err := os.Open(filepath)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			if os.Getenv(key) == "" {
+				os.Setenv(key, value)
+			}
+		}
+	}
 }
