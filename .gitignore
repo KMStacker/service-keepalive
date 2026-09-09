@@ -1,0 +1,23 @@
+# Compiled binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+service-keepalive
+
+# Test artifacts
+*.test
+*.out
+
+# Environment variables and secrets
+.env
+*.env
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
