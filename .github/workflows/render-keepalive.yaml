@@ -1,0 +1,16 @@
+name: render-keepalive
+
+on:
+  schedule:
+    - cron: '*/14 0,4-23 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send keepalive ping to Render
+        env:
+          RENDER_SITE_URL: ${{ secrets.RENDER_SITE_URL }}
+        run: |
+          curl -fsS --retry 2 --max-time 119 "$RENDER_SITE_URL" > /dev/null
