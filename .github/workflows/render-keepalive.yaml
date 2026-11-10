@@ -2,7 +2,7 @@ name: render-keepalive
 
 on:
   schedule:
-    - cron: '*/14 0,4-23 * * *'
+    - cron: '0 12 *  * *'
   workflow_dispatch:
 
 jobs:
